@@ -13,7 +13,4 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Catalog\Model\Product">
-        <plugin name="bundle" type="Magento\Bundle\Model\Plugin\Frontend\Product" sortOrder="100" />
-    </type>
 </config>

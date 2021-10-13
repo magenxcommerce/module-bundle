@@ -7,8 +7,6 @@ namespace Magento\Bundle\Block\Adminhtml\Sales\Order\Items;
 
 use Magento\Catalog\Model\Product\Type\AbstractType;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\App\ObjectManager;
-use Magento\Catalog\Helper\Data as CatalogHelper;
 
 /**
  * Adminhtml sales order item renderer
@@ -32,7 +30,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
      * @param \Magento\Framework\Registry $registry
      * @param array $data
      * @param \Magento\Framework\Serialize\Serializer\Json $serializer
-     * @param CatalogHelper|null $catalogHelper
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -40,11 +37,11 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
         \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration,
         \Magento\Framework\Registry $registry,
         array $data = [],
-        Json $serializer = null,
-        ?CatalogHelper $catalogHelper = null
+        Json $serializer = null
     ) {
-        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
-        $data['catalogHelper'] = $catalogHelper ?? ObjectManager::getInstance()->get(CatalogHelper::class);
+        $this->serializer = $serializer ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(Json::class);
+
         parent::__construct($context, $stockRegistry, $stockConfiguration, $registry, $data);
     }
 
@@ -54,7 +51,7 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
      * @param string $value
      * @param int $length
      * @param string $etc
-     * @param string $remainder
+     * @param string &$remainder
      * @param bool $breakWords
      * @return string
      */
@@ -103,8 +100,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Check if item can be shipped separately
-     *
      * @param mixed $item
      * @return bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -141,8 +136,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Check if child items calculated
-     *
      * @param mixed $item
      * @return bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -181,8 +174,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Retrieve selection attributes values
-     *
      * @param mixed $item
      * @return mixed|null
      */
@@ -200,8 +191,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Retrieve order item options array
-     *
      * @return array
      */
     public function getOrderOptions()
@@ -223,8 +212,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Retrieve order item
-     *
      * @return mixed
      */
     public function getOrderItem()
@@ -236,8 +223,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Get html info for item
-     *
      * @param mixed $item
      * @return string
      */
@@ -260,8 +245,6 @@ class Renderer extends \Magento\Sales\Block\Adminhtml\Items\Renderer\DefaultRend
     }
 
     /**
-     * Check if we can show price info for this item
-     *
      * @param object $item
      * @return bool
      */

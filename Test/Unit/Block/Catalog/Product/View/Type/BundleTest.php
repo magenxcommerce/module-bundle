@@ -3,61 +3,37 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-declare(strict_types=1);
-
 namespace Magento\Bundle\Test\Unit\Block\Catalog\Product\View\Type;
 
 use Magento\Bundle\Block\Catalog\Product\View\Type\Bundle as BundleBlock;
-use Magento\Bundle\Block\Catalog\Product\View\Type\Bundle\Option\Checkbox;
-use Magento\Bundle\Model\Option;
-use Magento\Bundle\Model\Product\Price;
-use Magento\Bundle\Model\Product\PriceFactory;
-use Magento\Bundle\Model\Product\Type;
-use Magento\Bundle\Model\ResourceModel\Option\Collection;
-use Magento\Bundle\Pricing\Price\TierPrice;
-use Magento\Catalog\Helper\Product;
-use Magento\Catalog\Pricing\Price\BasePrice;
-use Magento\Catalog\Pricing\Price\FinalPrice;
-use Magento\Catalog\Pricing\Price\RegularPrice;
-use Magento\CatalogRule\Model\ResourceModel\Product\CollectionProcessor;
-use Magento\Framework\DataObject;
-use Magento\Framework\Event\ManagerInterface;
-use Magento\Framework\Json\Encoder;
-use Magento\Framework\Pricing\Amount\AmountInterface;
-use Magento\Framework\Pricing\PriceInfo\Base;
-use Magento\Framework\Registry;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
-use Magento\Framework\View\Layout;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class BundleTest extends TestCase
+class BundleTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var PriceFactory|MockObject
+     * @var \Magento\Bundle\Model\Product\PriceFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     private $bundleProductPriceFactory;
 
     /**
-     * @var Encoder|MockObject
+     * @var \Magento\Framework\Json\Encoder|\PHPUnit_Framework_MockObject_MockObject
      */
     private $jsonEncoder;
 
     /**
-     * @var Product|MockObject
+     * @var \Magento\Catalog\Helper\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $catalogProduct;
 
     /**
-     * @var ManagerInterface|MockObject
+     * @var \Magento\Framework\Event\ManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private $eventManager;
 
     /**
-     * @var \Magento\Catalog\Model\Product|MockObject
+     * @var \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private $product;
 
@@ -66,11 +42,11 @@ class BundleTest extends TestCase
      */
     private $bundleBlock;
 
-    protected function setUp(): void
+    protected function setUp()
     {
-        $objectHelper = new ObjectManager($this);
+        $objectHelper = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 
-        $this->bundleProductPriceFactory = $this->getMockBuilder(PriceFactory::class)
+        $this->bundleProductPriceFactory = $this->getMockBuilder(\Magento\Bundle\Model\Product\PriceFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -87,23 +63,23 @@ class BundleTest extends TestCase
                     'getPreconfiguredValues'
                 ]
             )->getMock();
-        $registry = $this->getMockBuilder(Registry::class)
+        $registry = $this->getMockBuilder(\Magento\Framework\Registry::class)
             ->disableOriginalConstructor()
             ->setMethods(['registry'])
             ->getMock();
         $registry->expects($this->any())
             ->method('registry')
             ->willReturn($this->product);
-        $this->eventManager = $this->getMockBuilder(ManagerInterface::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $this->jsonEncoder = $this->getMockBuilder(Encoder::class)
+        $this->eventManager = $this->getMockBuilder(\Magento\Framework\Event\ManagerInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->catalogProduct = $this->getMockBuilder(Product::class)
+        $this->jsonEncoder = $this->getMockBuilder(\Magento\Framework\Json\Encoder::class)
             ->disableOriginalConstructor()
             ->getMock();
-        /** @var BundleBlock $bundleBlock */
+        $this->catalogProduct = $this->getMockBuilder(\Magento\Catalog\Helper\Product::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        /** @var $bundleBlock BundleBlock */
         $this->bundleBlock = $objectHelper->getObject(
             \Magento\Bundle\Block\Catalog\Product\View\Type\Bundle::class,
             [
@@ -116,9 +92,8 @@ class BundleTest extends TestCase
         );
 
         $ruleProcessor = $this->getMockBuilder(
-            CollectionProcessor::class
-        )->disableOriginalConstructor()
-            ->getMock();
+            \Magento\CatalogRule\Model\ResourceModel\Product\CollectionProcessor::class
+        )->disableOriginalConstructor()->getMock();
         $objectHelper->setBackwardCompatibleProperty(
             $this->bundleBlock,
             'catalogRuleProcessor',
@@ -128,13 +103,13 @@ class BundleTest extends TestCase
 
     public function testGetOptionHtmlNoRenderer()
     {
-        $option = $this->getMockBuilder(Option::class)
+        $option = $this->getMockBuilder(\Magento\Bundle\Model\Option::class)
             ->setMethods(['getType'])
             ->disableOriginalConstructor()
             ->getMock();
         $option->expects($this->any())->method('getType')->willReturn('checkbox');
 
-        $layout = $this->getMockBuilder(Layout::class)
+        $layout = $this->getMockBuilder(\Magento\Framework\View\Layout::class)
             ->setMethods(['getChildName', 'getBlock'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -149,19 +124,18 @@ class BundleTest extends TestCase
 
     public function testGetOptionHtml()
     {
-        $option = $this->getMockBuilder(Option::class)
+        $option = $this->getMockBuilder(\Magento\Bundle\Model\Option::class)
             ->setMethods(['getType'])
             ->disableOriginalConstructor()
             ->getMock();
         $option->expects($this->once())->method('getType')->willReturn('checkbox');
 
         $optionBlock = $this->getMockBuilder(
-            Checkbox::class
-        )->setMethods(['setOption', 'toHtml'])->disableOriginalConstructor()
-            ->getMock();
+            \Magento\Bundle\Block\Catalog\Product\View\Type\Bundle\Option\Checkbox::class
+        )->setMethods(['setOption', 'toHtml'])->disableOriginalConstructor()->getMock();
         $optionBlock->expects($this->any())->method('setOption')->willReturnSelf();
         $optionBlock->expects($this->any())->method('toHtml')->willReturn('option html');
-        $layout = $this->getMockBuilder(Layout::class)
+        $layout = $this->getMockBuilder(\Magento\Framework\View\Layout::class)
             ->setMethods(['getChildName', 'getBlock'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -177,7 +151,7 @@ class BundleTest extends TestCase
         $options = [];
         $finalPriceMock = $this->getPriceMock(
             [
-                'getPriceWithoutOption' => new DataObject(
+                'getPriceWithoutOption' => new \Magento\Framework\DataObject(
                     [
                         'value' => 100,
                         'base_amount' => 100,
@@ -187,7 +161,7 @@ class BundleTest extends TestCase
         );
         $regularPriceMock = $this->getPriceMock(
             [
-                'getAmount' => new DataObject(
+                'getAmount' => new \Magento\Framework\DataObject(
                     [
                         'value' => 110,
                         'base_amount' => 110,
@@ -196,15 +170,15 @@ class BundleTest extends TestCase
             ]
         );
         $prices = [
-            FinalPrice::PRICE_CODE => $finalPriceMock,
-            RegularPrice::PRICE_CODE => $regularPriceMock,
+            \Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE => $finalPriceMock,
+            \Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE => $regularPriceMock,
         ];
         $priceInfo = $this->getPriceInfoMock($prices);
 
         $this->updateBundleBlock(
             $options,
             $priceInfo,
-            Price::PRICE_TYPE_FIXED
+            \Magento\Bundle\Model\Product\Price::PRICE_TYPE_FIXED
         );
         $jsonConfig = $this->bundleBlock->getJsonConfig();
         $this->assertEquals(110, $jsonConfig['prices']['oldPrice']['amount']);
@@ -222,7 +196,7 @@ class BundleTest extends TestCase
                 'Selection 1',
                 23,
                 [
-                    ['price' => new DataObject(
+                    ['price' => new \Magento\Framework\DataObject(
                         ['base_amount' => $baseAmount, 'value' => $basePriceValue]
                     )],
                 ],
@@ -231,7 +205,7 @@ class BundleTest extends TestCase
             )
         ];
 
-        $bundleProductPrice = $this->getMockBuilder(Price::class)
+        $bundleProductPrice = $this->getMockBuilder(\Magento\Bundle\Model\Product\Price::class)
             ->disableOriginalConstructor()
             ->setMethods(['getLowestPrice'])
             ->getMock();
@@ -252,7 +226,7 @@ class BundleTest extends TestCase
         ];
         $finalPriceMock = $this->getPriceMock(
             [
-                'getPriceWithoutOption' => new DataObject(
+                'getPriceWithoutOption' => new \Magento\Framework\DataObject(
                     [
                         'value' => 100,
                         'base_amount' => 100,
@@ -262,7 +236,7 @@ class BundleTest extends TestCase
         );
         $regularPriceMock = $this->getPriceMock(
             [
-                'getAmount' => new DataObject(
+                'getAmount' => new \Magento\Framework\DataObject(
                     [
                         'value' => 110,
                         'base_amount' => 110,
@@ -278,15 +252,15 @@ class BundleTest extends TestCase
         $prices = [
             'bundle_option' => $bundleOptionPriceMock,
             'bundle_option_regular_price' => $bundleOptionPriceMock,
-            FinalPrice::PRICE_CODE => $finalPriceMock,
-            RegularPrice::PRICE_CODE => $regularPriceMock,
+            \Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE => $finalPriceMock,
+            \Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE => $regularPriceMock,
         ];
         $priceInfo = $this->getPriceInfoMock($prices);
 
         $this->product->expects($this->once())
             ->method('hasPreconfiguredValues')
             ->willReturn(true);
-        $preconfiguredValues = new DataObject(
+        $preconfiguredValues = new \Magento\Framework\DataObject(
             [
                 'bundle_option' => [
                     1 => 123123111,
@@ -300,7 +274,7 @@ class BundleTest extends TestCase
         $this->updateBundleBlock(
             $options,
             $priceInfo,
-            Price::PRICE_TYPE_FIXED
+            \Magento\Bundle\Model\Product\Price::PRICE_TYPE_FIXED
         );
         $jsonConfig = $this->bundleBlock->getJsonConfig();
         $this->assertEquals(110, $jsonConfig['prices']['oldPrice']['amount']);
@@ -311,14 +285,14 @@ class BundleTest extends TestCase
 
     /**
      * @param array $options
-     * @param Base|MockObject $priceInfo
+     * @param \Magento\Framework\Pricing\PriceInfo\Base|\PHPUnit_Framework_MockObject_MockObject $priceInfo
      * @param string $priceType
      * @return void
      */
     private function updateBundleBlock($options, $priceInfo, $priceType)
     {
         $this->eventManager->expects($this->any())->method('dispatch')->willReturn(true);
-        $optionCollection = $this->getMockBuilder(Collection::class)
+        $optionCollection = $this->getMockBuilder(\Magento\Bundle\Model\ResourceModel\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $optionCollection->expects($this->any())
@@ -330,7 +304,7 @@ class BundleTest extends TestCase
             ->getMock();
         $selectionCollection->expects($this->once())->method('addTierPriceData');
 
-        $typeInstance = $this->getMockBuilder(Type::class)
+        $typeInstance = $this->getMockBuilder(\Magento\Bundle\Model\Product\Type::class)
             ->disableOriginalConstructor()
             ->getMock();
         $typeInstance->expects($this->any())
@@ -354,16 +328,16 @@ class BundleTest extends TestCase
             ->willReturn($priceType);
         $this->jsonEncoder->expects($this->any())
             ->method('encode')
-            ->willReturnArgument(0);
+            ->will($this->returnArgument(0));
     }
 
     /**
      * @param $price
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getPriceInfoMock($price)
     {
-        $priceInfoMock = $this->getMockBuilder(Base::class)
+        $priceInfoMock = $this->getMockBuilder(\Magento\Framework\Pricing\PriceInfo\Base::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPrice'])
             ->getMock();
@@ -387,7 +361,7 @@ class BundleTest extends TestCase
 
     /**
      * @param $prices
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function getPriceMock($prices)
     {
@@ -395,7 +369,7 @@ class BundleTest extends TestCase
         foreach (array_keys($prices) as $methodName) {
             $methods[] = $methodName;
         }
-        $priceMock = $this->getMockBuilder(BasePrice::class)
+        $priceMock = $this->getMockBuilder(\Magento\Catalog\Pricing\Price\BasePrice::class)
             ->disableOriginalConstructor()
             ->setMethods($methods)
             ->getMock();
@@ -412,11 +386,11 @@ class BundleTest extends TestCase
      * @param float $value
      * @param mixed $baseAmount
      * @param array $selectionAmounts
-     * @return AmountInterface|MockObject
+     * @return \Magento\Framework\Pricing\Amount\AmountInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function getAmountPriceMock($value, $baseAmount, array $selectionAmounts)
     {
-        $amountPrice = $this->getMockBuilder(AmountInterface::class)
+        $amountPrice = $this->getMockBuilder(\Magento\Framework\Pricing\Amount\AmountInterface::class)
             ->disableOriginalConstructor()
             ->setMethods(['getValue', 'getBaseAmount', 'getOptionSelectionAmount'])
             ->getMockForAbstractClass();
@@ -426,12 +400,14 @@ class BundleTest extends TestCase
             $amountPrice->expects($this->any())
                 ->method('getOptionSelectionAmount')
                 ->with($selectionAmount['item'])
-                ->willReturn(
-                    new DataObject(
-                        [
-                            'value' => $selectionAmount['value'],
-                            'base_amount' => $selectionAmount['base_amount'],
-                        ]
+                ->will(
+                    $this->returnValue(
+                        new \Magento\Framework\DataObject(
+                            [
+                                'value' => $selectionAmount['value'],
+                                'base_amount' => $selectionAmount['base_amount'],
+                            ]
+                        )
                     )
                 );
         }
@@ -445,7 +421,7 @@ class BundleTest extends TestCase
      * @param \Magento\Catalog\Model\Product[] $selections
      * @param int|string $type
      * @param bool $isRequired
-     * @return MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      * @internal param bool $isDefault
      */
     private function createOption(
@@ -455,7 +431,7 @@ class BundleTest extends TestCase
         $type = 'checkbox',
         $isRequired = false
     ) {
-        $option = $this->getMockBuilder(Option::class)
+        $option = $this->getMockBuilder(\Magento\Bundle\Model\Option::class)
             ->disableOriginalConstructor()
             ->setMethods(
                 [
@@ -484,7 +460,7 @@ class BundleTest extends TestCase
      * @param bool $isCanChangeQty
      * @param bool $isDefault
      * @param bool $isSalable
-     * @return \Magento\Catalog\Model\Product|MockObject
+     * @return \Magento\Catalog\Model\Product|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createOptionSelection(
         $id,
@@ -509,12 +485,12 @@ class BundleTest extends TestCase
             )
             ->disableOriginalConstructor()
             ->getMock();
-        $tierPrice = $this->getMockBuilder(TierPrice::class)
+        $tierPrice = $this->getMockBuilder(\Magento\Bundle\Pricing\Price\TierPrice::class)
             ->disableOriginalConstructor()
             ->setMethods(['getTierPriceList'])
             ->getMock();
         $tierPrice->expects($this->any())->method('getTierPriceList')->willReturn($tierPriceList);
-        $priceInfo = $this->getMockBuilder(Base::class)
+        $priceInfo = $this->getMockBuilder(\Magento\Framework\Pricing\PriceInfo\Base::class)
             ->disableOriginalConstructor()
             ->setMethods(['getPrice'])
             ->getMock();
@@ -538,13 +514,13 @@ class BundleTest extends TestCase
     {
         $newOptions = ['option_1', 'option_2'];
 
-        $optionCollection = $this->getMockBuilder(Collection::class)
+        $optionCollection = $this->getMockBuilder(\Magento\Bundle\Model\ResourceModel\Option\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
         $selectionConnection = $this->getMockBuilder(\Magento\Bundle\Model\ResourceModel\Selection\Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $typeInstance = $this->getMockBuilder(Type::class)
+        $typeInstance = $this->getMockBuilder(\Magento\Bundle\Model\Product\Type::class)
             ->disableOriginalConstructor()
             ->getMock();
 

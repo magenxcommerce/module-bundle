@@ -4,13 +4,13 @@
  * See COPYING.txt for license details.
  */
 
+/**
+ * Bundle Extended Attribures Block
+ *
+ * @author      Magento Core Team <core@magentocommerce.com>
+ */
 namespace Magento\Bundle\Block\Adminhtml\Catalog\Product\Edit\Tab\Attributes;
 
-/**
- * Bundle Extended Attributes Block.
- *
- * @author Magento Core Team <core@magentocommerce.com>
- */
 class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Element
 {
     /**
@@ -75,7 +75,7 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
     }
 
     /**
-     * Execute method getElementHtml from parent class
+     * Execute method getElementHtml from parrent class
      *
      * @return string
      */
@@ -85,8 +85,6 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
     }
 
     /**
-     * Get options.
-     *
      * @return array
      */
     public function getOptions()
@@ -108,8 +106,6 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
     }
 
     /**
-     * Is disabled field.
-     *
      * @return bool
      */
     public function isDisabledField()
@@ -122,8 +118,6 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
     }
 
     /**
-     * Get product.
-     *
      * @return mixed
      */
     public function getProduct()
@@ -135,8 +129,6 @@ class Extend extends \Magento\Catalog\Block\Adminhtml\Form\Renderer\Fieldset\Ele
     }
 
     /**
-     * Get extended element.
-     *
      * @param string $switchAttributeCode
      * @return \Magento\Framework\Data\Form\Element\Select
      * @throws \Magento\Framework\Exception\LocalizedException
